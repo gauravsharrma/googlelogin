@@ -1,11 +1,33 @@
 import { useEffect, useState } from 'react';
-import { auth, provider } from './firebase';
-import { signInWithPopup, signOut, User, onAuthStateChanged } from 'firebase/auth';
+import {
+  auth,
+  provider
+} from './firebase';
+import {
+  signInWithPopup,
+  signOut,
+  User,
+  onAuthStateChanged,
+  getRedirectResult,
+  signInWithRedirect
+} from 'firebase/auth';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
 
+  // Handle user state after redirect
   useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          setUser(result.user);
+        }
+      })
+      .catch((error) => {
+        console.error('Redirect login error:', error);
+      });
+
+    // Also listen to auth state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -14,9 +36,12 @@ function App() {
 
   const handleLogin = async () => {
     try {
+      // Try popup first
       await signInWithPopup(auth, provider);
     } catch (err) {
-      console.error(err);
+      // If popup fails (e.g., in mobile), fallback to redirect
+      console.warn('Popup failed, using redirect');
+      await signInWithRedirect(auth, provider);
     }
   };
 
