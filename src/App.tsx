@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   auth,
   provider
@@ -43,14 +44,19 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-white px-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 max-w-sm w-full text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-white px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white/90 backdrop-blur-md shadow-xl rounded-2xl p-8 max-w-md w-full text-center"
+      >
         {!user ? (
           <>
-            <h1 className="text-2xl font-semibold mb-6 text-gray-800">Welcome 👋</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-800">Welcome 👋</h1>
             <button
               onClick={handleLogin}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 focus-visible:ring focus-visible:ring-indigo-300 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Sign in with Google
             </button>
@@ -60,19 +66,19 @@ export default function App() {
             <img
               src={user.photoURL || ''}
               alt="profile"
-              className="w-20 h-20 rounded-full mx-auto shadow mb-4"
+              className="w-24 h-24 rounded-full mx-auto shadow mb-4"
             />
-            <h2 className="text-xl font-bold text-gray-800">{user.displayName}</h2>
-            <p className="text-gray-500">{user.email}</p>
+            <h2 className="text-2xl font-semibold text-gray-800">{user.displayName}</h2>
+            <p className="text-gray-500 mb-4 break-all">{user.email}</p>
             <button
               onClick={handleLogout}
-              className="mt-6 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded transition"
+              className="mt-2 bg-gray-100 hover:bg-gray-200 focus-visible:ring focus-visible:ring-indigo-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Sign out
             </button>
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }
